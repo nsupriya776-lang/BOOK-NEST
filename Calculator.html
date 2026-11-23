@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #929da7;
+        }
+
+        .calculator {
+            width: min(320px, 90vw);
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #995d5d;
+        }
+
+        #result {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 12px;
+            padding: 10px;
+            border: 0;
+            border-radius: 6px;
+            font-size: 24px;
+            text-align: right;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .buttons button {
+            min-height: 52px;
+            border: 0;
+            border-radius: 6px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .operator-button {
+            background-color: #ffd166;
+        }
+
+        .clear-button {
+            color: white;
+            background-color: #e76f51;
+        }
+
+        .equals-button {
+            background-color: #70c1b3;
+        }
+
+        .zero-button {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="calculator">
+        <div class="display">
+            <input type="text" id="result"
+                   placeholder="0" aria-label="Calculator display"
+                   readonly>
+        </div>
+
+        <div class="buttons">
+
+            <button type="button" class="clear-button" id="clear">C</button>
+            <button type="button" class="operator-button" data-operator="/">/</button>
+            <button type="button" class="operator-button" data-operator="*">*</button>
+            <button type="button" class="operator-button" data-operator="-">-</button>
+
+            <button type="button" class="number-button">7</button>
+            <button type="button" class="number-button">8</button>
+            <button type="button" class="number-button">9</button>
+            <button type="button" class="operator-button" data-operator="+">+</button>
+
+            <button type="button" class="number-button">4</button>
+            <button type="button" class="number-button">5</button>
+            <button type="button" class="number-button">6</button>
+            <button type="button" class="equals-button" id="equals">=</button>
+
+            <button type="button" class="number-button">1</button>
+            <button type="button" class="number-button">2</button>
+            <button type="button" class="number-button">3</button>
+            <button type="button" class="number-button zero-button">0</button>
+
+            <button type="button" class="number-button">.</button>
+
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById("result");
+        const numberButtons = document.querySelectorAll(".number-button");
+        const operatorButtons = document.querySelectorAll(".operator-button");
+        const equalsButton = document.getElementById("equals");
+        const clearButton = document.getElementById("clear");
+
+        let firstNumber = "";
+        let operator = "";
+        let shouldReset = false;
+
+        numberButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                if (shouldReset) {
+                    display.value = "";
+                    shouldReset = false;
+                }
+
+                display.value += button.textContent;
+            });
+        });
+
+        operatorButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                firstNumber = Number(display.value);
+                operator = button.dataset.operator;
+                shouldReset = true;
+            });
+        });
+
+        equalsButton.addEventListener("click", function() {
+            const secondNumber = Number(display.value);
+            let result;
+
+            if (operator === "+") {
+                result = firstNumber + secondNumber;
+            } else if (operator === "-") {
+                result = firstNumber - secondNumber;
+            } else if (operator === "*") {
+                result = firstNumber * secondNumber;
+            } else if (operator === "/") {
+                result = secondNumber !== 0
+                    ? firstNumber / secondNumber
+                    : "Cannot divide by zero";
+            } else {
+                return;
+            }
+
+            display.value = result;
+            shouldReset = true;
+        });
+
+        clearButton.addEventListener("click", function() {
+            display.value = "";
+            firstNumber = "";
+            operator = "";
+            shouldReset = false;
+        });
+    </script>
+
+</body>
+</html>
